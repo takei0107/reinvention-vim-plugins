@@ -21,7 +21,11 @@ function statusline#modules#get_modules() abort
 endfunction
 
 function statusline#modules#call_moduler_func(moduler) abort
-  return call(a:moduler, [])
+  if a:moduler !=# 'undefined'
+    return call(a:moduler, [])
+  else
+    return ''
+  endif
 endfunction
 
 function! statusline#modules#rel_path() abort

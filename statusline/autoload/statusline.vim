@@ -4,27 +4,35 @@ endfunction
 
 function! s:build_output() abort
   let line = []
-  for moduler in s:aggregate_modulers()
-    call add(line, statusline#modules#call_moduler_func(moduler))
+  for module in s:aggregate_modules()
+    if !empty(module)
+      call add(line, s:buile_module_output(module))
+    endif
   endfor
-  return join(line, "\ ")
+  return s:create_statusline(line)
+endfunction
+
+function! s:create_statusline(line) abort
+  return join(a:line, ' ')
+endfunction
+
+function! s:buile_module_output(module) abort
+  " TODO デフォルト強調グループの決定を考慮する
+  let layout_group = get(a:module, 'layout_group', 'statusline')
+  let moduler = get(a:module, 'moduler', 'undefined')
+  return '%#' . layout_group . '#' . statusline#modules#call_moduler_func(moduler)
 endfunction
 
 " TODO 利用するモジュールの決定
 let s:target_modules = ['current_mode', 'cursol_num', 'file_position_percent']
 
-function! s:aggregate_modulers() abort
-  let modulers = []
-  for module_nane in s:target_modules
-    let moduler = s:resolve_moduler(module_nane)
-    if moduler !=# 'undefined'
-      call add(modulers, moduler)
+function! s:aggregate_modules() abort
+  let modules = []
+  for module_name in s:target_modules
+    let module = get(statusline#modules#get_modules(), module_name, {})
+    if !empty(module)
+      call add(modules, module)
     endif
   endfor
-  return modulers
+  return modules
 endfunctio
-
-function! s:resolve_moduler(module_name) abort
-  let module = get(statusline#modules#get_modules(), a:module_name, {})
-  return get(module, 'moduler', 'undefined')
-endfunction
