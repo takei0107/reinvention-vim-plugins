@@ -5,7 +5,7 @@ endfunction
 function! s:build_output() abort
   let line = []
   for moduler in s:aggregate_modulers()
-    call add(line, modules#call_moduler_func(moduler))
+    call add(line, statusline#modules#call_moduler_func(moduler))
   endfor
   return join(line, "\ ")
 endfunction
@@ -23,5 +23,5 @@ function! s:aggregate_modulers() abort
 endfunctio
 
 function! s:resolve_moduler(module_name) abort
-  return get(modules#get_modules(), a:module_name)
+  return get(statusline#modules#get_modules(), a:module_name)
 endfunction

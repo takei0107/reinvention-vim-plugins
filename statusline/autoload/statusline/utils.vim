@@ -1,4 +1,4 @@
-function! utils#convert_mode_str(mode) 
+function! statusline#utils#convert_mode_str(mode) 
   let pre = a:mode[0]
   return s:resolve_mode_str(pre)
 endfunction
