@@ -66,5 +66,5 @@ function! modules#file_position_percent() abort
 endfunction
 
 function! modules#current_mode() abort
-  return mode()
+  return utils#convert_mode_str(mode())
 endfunction
