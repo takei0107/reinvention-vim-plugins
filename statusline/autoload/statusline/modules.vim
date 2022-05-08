@@ -1,16 +1,19 @@
 let s:modules = {
-  \  'rel_path'              : 'statusline#modules#rel_path',
-  \  'abs_path'              : 'statusline#modules#abs_path',
-  \  'file_name'             : 'statusline#modules#file_name',
-  \  'modifiable_mark'       : 'statusline#modules#modifiable_mark',
-  \  'read_only'             : 'statusline#modules#read_only',
-  \  'file_type'             : 'statusline#modules#file_type',
-  \  'buffer_num'            : 'statusline#modules#buffer_num',
-  \  'cursol_num'            : 'statusline#modules#cursol_num',
-  \  'line_num'              : 'statusline#modules#line_num',
-  \  'buffer_line_num'       : 'statusline#modules#buffer_lines_num',
-  \  'file_position_percent' : 'statusline#modules#file_position_percent',
-  \  'current_mode'          : 'statusline#modules#current_mode',
+  \  'rel_path'              : {'moduler' : 'statusline#modules#rel_path'},
+  \  'abs_path'              : {'moduler' : 'statusline#modules#abs_path'},
+  \  'file_name'             : {'moduler' : 'statusline#modules#file_name'},
+  \  'modifiable_mark'       : {'moduler' : 'statusline#modules#modifiable_mark'},
+  \  'read_only'             : {'moduler' : 'statusline#modules#read_only'},
+  \  'file_type'             : {'moduler' : 'statusline#modules#file_type'},
+  \  'buffer_num'            : {'moduler' : 'statusline#modules#buffer_num'},
+  \  'cursol_num'            : {'moduler' : 'statusline#modules#cursol_num'},
+  \  'line_num'              : {'moduler' : 'statusline#modules#line_num'},
+  \  'buffer_line_num'       : {'moduler' : 'statusline#modules#buffer_lines_num'},
+  \  'file_position_percent' : {'moduler' : 'statusline#modules#file_position_percent'},
+  \  'current_mode'          : {
+  \                              'moduler' : 'statusline#modules#current_mode',
+  \                              'layout_group' : 'difftext'
+  \                            },
   \  }
 
 function statusline#modules#get_modules() abort

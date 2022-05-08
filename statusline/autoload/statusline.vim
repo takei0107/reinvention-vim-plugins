@@ -17,11 +17,14 @@ function! s:aggregate_modulers() abort
   let modulers = []
   for module_nane in s:target_modules
     let moduler = s:resolve_moduler(module_nane)
-    call add(modulers, moduler)
+    if moduler !=# 'undefined'
+      call add(modulers, moduler)
+    endif
   endfor
   return modulers
 endfunctio
 
 function! s:resolve_moduler(module_name) abort
-  return get(statusline#modules#get_modules(), a:module_name)
+  let module = get(statusline#modules#get_modules(), a:module_name, {})
+  return get(module, 'moduler', 'undefined')
 endfunction
