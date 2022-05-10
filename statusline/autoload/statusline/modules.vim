@@ -14,10 +14,42 @@ let s:modules = {
   \                              'moduler' : 'statusline#modules#current_mode',
   \                              'layout_group' : 'difftext'
   \                            },
+  \  'current_mode_n'        : {
+  \                              'moduler' : 'statusline#modules#current_mode_normal',
+  \                              'layout_group' : 'difftext'
+  \                            },
+  \  'current_mode_i'        : {
+  \                              'moduler' : 'statusline#modules#current_mode_insert',
+  \                              'layout_group' : 'difftext'
+  \                            },
+  \  'current_mode_v'        : {
+  \                              'moduler' : 'statusline#modules#current_mode_visual',
+  \                              'layout_group' : 'difftext'
+  \                            },
+  \  'current_mode_v_l'      : {
+  \                              'moduler' : 'statusline#modules#current_mode_visual_line',
+  \                              'layout_group' : 'difftext'
+  \                            },
+  \  'current_mode_r'        : {
+  \                              'moduler' : 'statusline#modules#current_mode_replace',
+  \                              'layout_group' : 'difftext'
+  \                            },
+  \  'current_mode_t'        : {
+  \                              'moduler' : 'statusline#modules#current_mode_terminal',
+  \                              'layout_group' : 'difftext'
+  \                            },
+  \  'current_mode_c'        : {
+  \                              'moduler' : 'statusline#modules#current_mode_command',
+  \                              'layout_group' : 'difftext'
+  \                            },
   \  }
 
-function statusline#modules#get_modules() abort
+function! statusline#modules#get_modules() abort
   return s:modules
+endfunction
+
+function! statusline#modules#resolve_moduler(module) abort
+  return get(a:module, 'moduler', 'undefined')
 endfunction
 
 function statusline#modules#call_moduler_func(moduler) abort
@@ -73,5 +105,36 @@ function! statusline#modules#file_position_percent() abort
 endfunction
 
 function! statusline#modules#current_mode() abort
-  return statusline#utils#convert_mode_str(mode())
+  let mode_module_name = statusline#utils#resolve_mode_module_name(mode())
+  let module = get(s:modules, mode_module_name, 'undefined')
+  let moduler = statusline#modules#resolve_moduler(module)
+  return statusline#modules#call_moduler_func(moduler)
+endfunction
+
+function! statusline#modules#current_mode_normal() abort
+  return "normal"
+endfunction
+
+function! statusline#modules#current_mode_insert() abort
+  return "insert"
+endfunction
+
+function! statusline#modules#current_mode_visual() abort
+  return "visual"
+endfunction
+
+function! statusline#modules#current_mode_visual_line() abort
+  return "visual-line"
+endfunction
+
+function! statusline#modules#current_mode_replace() abort
+  return "replace"
+endfunction
+
+function! statusline#modules#current_mode_command() abort
+  return "command"
+endfunction
+
+function! statusline#modules#current_mode_terminal() abort
+  return "terminal"
 endfunction
