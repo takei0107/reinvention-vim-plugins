@@ -6,7 +6,7 @@ function! s:build_output() abort
   let line = []
   for module in s:aggregate_modules()
     if !empty(module)
-      call add(line, s:buile_module_output(module))
+      call add(line, statusline#modules#output(module))
     endif
   endfor
   return s:create_statusline(line)
@@ -14,14 +14,6 @@ endfunction
 
 function! s:create_statusline(line) abort
   return join(a:line, ' ')
-endfunction
-
-function! s:buile_module_output(module) abort
-  " TODO デフォルト強調グループの決定を考慮する
-  let layout_group = get(a:module, 'layout_group', 'statusline')
-  let moduler = statusline#modules#resolve_moduler(a:module)
-  " TODO レイアウト文字列の作成を関数にする。(modeも考慮する)
-  return '%#' . layout_group . '#' . statusline#modules#call_moduler_func(moduler)
 endfunction
 
 " TODO 利用するモジュールの決定

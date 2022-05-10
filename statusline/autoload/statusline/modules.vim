@@ -52,12 +52,24 @@ function! statusline#modules#resolve_moduler(module) abort
   return get(a:module, 'moduler', 'undefined')
 endfunction
 
-function statusline#modules#call_moduler_func(moduler) abort
+function! statusline#modules#call_moduler_func(moduler) abort
   if a:moduler !=# 'undefined'
     return call(a:moduler, [])
   else
     return ''
   endif
+endfunction
+
+function! statusline#modules#output(module) abort
+  let moduler = statusline#modules#resolve_moduler(a:module)
+  let moduler_output = statusline#modules#call_moduler_func(moduler)
+  let layout = s:layout(a:module)
+  return layout . moduler_output
+endfunction
+
+function! s:layout(module) abort
+  let layout_group = get(a:module, 'layout_group', 'default')
+  return "%#" . layout_group . "#"
 endfunction
 
 function! statusline#modules#rel_path() abort
