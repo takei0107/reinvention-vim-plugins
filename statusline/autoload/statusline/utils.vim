@@ -13,7 +13,7 @@ let s:mode_outputs = {
   \ 'i' : 'insert',
   \ 'v' : 'visual',
   \ 'V' : 'visual-line',
-  \ 'r' : 'replace',
+  \ 'R' : 'replace',
   \ 't' : 'terminal',
   \ 'c' : 'command',
   \}
