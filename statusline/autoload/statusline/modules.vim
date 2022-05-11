@@ -91,31 +91,3 @@ endfunction
 function! statusline#modules#current_mode() abort
   return statusline#utils#resolve_mode_module(mode())
 endfunction
-
-function! statusline#modules#current_mode_normal() abort
-  return "normal"
-endfunction
-
-function! statusline#modules#current_mode_insert() abort
-  return "insert"
-endfunction
-
-function! statusline#modules#current_mode_visual() abort
-  return "visual"
-endfunction
-
-function! statusline#modules#current_mode_visual_line() abort
-  return "visual-line"
-endfunction
-
-function! statusline#modules#current_mode_replace() abort
-  return "replace"
-endfunction
-
-function! statusline#modules#current_mode_command() abort
-  return "command"
-endfunction
-
-function! statusline#modules#current_mode_terminal() abort
-  return "terminal"
-endfunction
