@@ -12,7 +12,8 @@ let s:modules = {
   \  'file_position_percent' : {'moduler' : 'statusline#modules#file_position_percent'},
   \  'current_mode'          : {
   \                              'moduler' : 'statusline#modules#current_mode',
-  \                              'layout_group' : 'difftext'
+  \                              'layout_group' : 'difftext',
+  \                              'layout_func' : "\<SID>layout_current_mode"
   \                            },
   \  }
 
@@ -24,24 +25,32 @@ function! statusline#modules#resolve_moduler(module) abort
   return get(a:module, 'moduler', 'undefined')
 endfunction
 
-function! statusline#modules#call_moduler_func(moduler) abort
-  if a:moduler !=# 'undefined'
-    return call(a:moduler, [])
+function! s:call_moduler_func(moduler_func) abort
+  if a:moduler_func !=# 'undefined'
+    return call(a:moduler_func, [])
   else
     return ''
   endif
 endfunction
 
-function! statusline#modules#output(module) abort
-  let moduler = statusline#modules#resolve_moduler(a:module)
-  let moduler_output = statusline#modules#call_moduler_func(moduler)
-  let layout = s:layout(a:module)
-  return layout . moduler_output
+function! s:call_layout_func(layout_func, moduler_output) abort
+  return call(a:layout_func, [a:moduler_output])
 endfunction
 
-function! s:layout(module) abort
-  let layout_group = get(a:module, 'layout_group', 'default')
+function! s:build_layout(module, moduler_output) abort
+  if has_key(a:module, 'layout_func')
+    let layout_group = s:call_layout_func(get(a:module, 'layout_func'), a:moduler_output)
+  else
+    let layout_group = get(a:module, 'layout_group', 'default')
+  endif
   return "%#" . layout_group . "#"
+endfunction
+
+function! statusline#modules#output(module) abort
+  let moduler = statusline#modules#resolve_moduler(a:module)
+  let moduler_output = s:call_moduler_func(moduler)
+  let layout_output = s:build_layout(a:module, moduler_output)
+  return layout_output . moduler_output
 endfunction
 
 function! statusline#modules#rel_path() abort
@@ -89,5 +98,9 @@ function! statusline#modules#file_position_percent() abort
 endfunction
 
 function! statusline#modules#current_mode() abort
-  return statusline#utils#resolve_mode_module(mode())
+  return statusline#utils#resolve_mode_output(mode())
+endfunction
+
+function! s:layout_current_mode(moduler_output) abort
+  return statusline#utils#resolve_mode_layout(a:moduler_output)
 endfunction
