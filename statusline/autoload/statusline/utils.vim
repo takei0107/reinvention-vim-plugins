@@ -1,18 +1,17 @@
-let s:mode_modules = {
-  \  'n' : 'current_mode_n',
-  \  'i' : 'current_mode_i',
-  \  'v' : 'current_mode_v',
-  \  'V' : 'current_mode_v_l',
-  \  'R' : 'current_mode_r',
-  \  'c' : 'current_mode_c',
-  \  't' : 'current_mode_t',
+function! statusline#utils#resolve_mode_module(current_mode)
+  return s:get_current_mode_output(a:current_mode[0])
+endfunction
+
+let s:mode_outputs = {
+  \ 'n' : 'normal',
+  \ 'i' : 'insert',
+  \ 'v' : 'visual',
+  \ 'V' : 'visual-line',
+  \ 'r' : 'replace',
+  \ 't' : 'terminal',
+  \ 'c' : 'command',
   \}
-
-function! statusline#utils#resolve_mode_module_name(mode)
-  return s:get_mode_module_name(a:mode[0])
+function! s:get_current_mode_output(pre) abort
+  " TODO 未定義のモードがある？
+  return get(s:mode_outputs, a:pre, 'undefined')
 endfunction
-
-function! s:get_mode_module_name(mode_prefix)
-  return get(s:mode_modules, a:mode_prefix, 'undefined')
-endfunction
-

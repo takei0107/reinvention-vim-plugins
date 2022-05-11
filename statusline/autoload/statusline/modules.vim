@@ -14,34 +14,6 @@ let s:modules = {
   \                              'moduler' : 'statusline#modules#current_mode',
   \                              'layout_group' : 'difftext'
   \                            },
-  \  'current_mode_n'        : {
-  \                              'moduler' : 'statusline#modules#current_mode_normal',
-  \                              'layout_group' : 'difftext'
-  \                            },
-  \  'current_mode_i'        : {
-  \                              'moduler' : 'statusline#modules#current_mode_insert',
-  \                              'layout_group' : 'difftext'
-  \                            },
-  \  'current_mode_v'        : {
-  \                              'moduler' : 'statusline#modules#current_mode_visual',
-  \                              'layout_group' : 'difftext'
-  \                            },
-  \  'current_mode_v_l'      : {
-  \                              'moduler' : 'statusline#modules#current_mode_visual_line',
-  \                              'layout_group' : 'difftext'
-  \                            },
-  \  'current_mode_r'        : {
-  \                              'moduler' : 'statusline#modules#current_mode_replace',
-  \                              'layout_group' : 'difftext'
-  \                            },
-  \  'current_mode_t'        : {
-  \                              'moduler' : 'statusline#modules#current_mode_terminal',
-  \                              'layout_group' : 'difftext'
-  \                            },
-  \  'current_mode_c'        : {
-  \                              'moduler' : 'statusline#modules#current_mode_command',
-  \                              'layout_group' : 'difftext'
-  \                            },
   \  }
 
 function! statusline#modules#get_modules() abort
@@ -117,10 +89,7 @@ function! statusline#modules#file_position_percent() abort
 endfunction
 
 function! statusline#modules#current_mode() abort
-  let mode_module_name = statusline#utils#resolve_mode_module_name(mode())
-  let module = get(s:modules, mode_module_name, 'undefined')
-  let moduler = statusline#modules#resolve_moduler(module)
-  return statusline#modules#call_moduler_func(moduler)
+  return statusline#utils#resolve_mode_module(mode())
 endfunction
 
 function! statusline#modules#current_mode_normal() abort
