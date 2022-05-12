@@ -50,7 +50,7 @@ function! statusline#modules#output(module) abort
   let moduler = statusline#modules#resolve_moduler(a:module)
   let moduler_output = s:call_moduler_func(moduler)
   let layout_output = s:build_layout(a:module, moduler_output)
-  return layout_output . moduler_output
+  return layout_output . ' ' . moduler_output
 endfunction
 
 function! statusline#modules#rel_path() abort
