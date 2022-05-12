@@ -17,7 +17,7 @@ function! s:create_statusline(line) abort
 endfunction
 
 " TODO 利用するモジュールの決定
-let s:target_modules = ['current_mode', 'cursol_num', 'file_position_percent']
+let s:target_modules = ['current_mode', 'file_name', 'file_position_percent']
 
 function! s:aggregate_modules() abort
   let modules = []

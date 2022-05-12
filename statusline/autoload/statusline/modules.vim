@@ -62,7 +62,7 @@ function! statusline#modules#abs_path() abort
 endfunction
 
 function! statusline#modules#file_name() abort
-  return "%S"
+  return "%t"
 endfunction
 
 function! statusline#modules#modifiable_mark() abort
