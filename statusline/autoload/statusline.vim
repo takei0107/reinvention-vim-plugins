@@ -3,29 +3,60 @@ function! statusline#output() abort
 endfunction
 
 function! s:build_output() abort
-  let line = []
-  for module in s:aggregate_modules()
-    if !empty(module)
-      call add(line, statusline#modules#output(module))
-    endif
+  let modules_by_positon = s:aggregate_modules()
+  let line_by_position = {}
+  for position in keys(modules_by_positon)
+    let modules = get(modules_by_positon, position, [])
+    let outputs = []
+    for module in modules
+      if !empty(module)
+        let output = statusline#modules#output(module)
+        call add(outputs, output)
+      endif
+    endfor
+    let line_by_position[position] = s:create_line(outputs)
   endfor
-  return s:create_statusline(line)
+  return s:join_line_by_position(line_by_position)
 endfunction
 
-function! s:create_statusline(line) abort
-  return join(a:line, ' ')
+function! s:join_line_by_position(lineput_by_position)
+  let left_output = get(a:lineput_by_position, 'left', [])
+  let right_output = get(a:lineput_by_position, 'right', [])
+  return left_output . '%=' . right_output
+endfunction
+
+function! s:create_line(outputs) abort
+  return join(a:outputs, ' ')
 endfunction
 
 " TODO 利用するモジュールの決定
-let s:target_modules = ['current_mode', 'file_name', 'file_position_percent']
+let s:target_modules = {
+  \ 'left' : ['current_mode', 'file_name', 'file_position_percent'],
+  \ 'right' : ['current_mode', 'file_name', 'file_position_percent'],
+  \ }
 
 function! s:aggregate_modules() abort
-  let modules = []
-  for module_name in s:target_modules
-    let module = get(statusline#modules#get_modules(), module_name, {})
-    if !empty(module)
-      call add(modules, module)
-    endif
+  let left_target_modules = s:get_target_modules_by_position(s:target_modules, 'left')
+  let right_target_modules = s:get_target_modules_by_position(s:target_modules, 'right')
+  let target_modules_by_position = {
+    \  'left'  : left_target_modules,
+    \  'right' : right_target_modules,
+    \}
+  let modules = {}
+  for position in keys(target_modules_by_position)
+    let modules_by_position = []
+    let target_modules = get(target_modules_by_position, position, [])
+    for module_name in target_modules
+      let module = get(statusline#modules#get_modules(), module_name, {})
+      if !empty(module)
+        call add(modules_by_position, module)
+      endif
+    endfor
+    let modules[position] = modules_by_position
   endfor
   return modules
-endfunctio
+endfunction
+
+function! s:get_target_modules_by_position(target_modules, position)
+  return get(a:target_modules, a:position, [])
+endfunction
