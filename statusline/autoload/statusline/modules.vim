@@ -15,7 +15,8 @@ let s:modules = {
   \                              'layout_group' : 'difftext',
   \                              'layout_func' : "\<SID>layout_current_mode"
   \                            },
-  \  'file_encoding'          : {'moduler' : 'statusline#modules#file_encoding'},
+  \  'file_encoding'        : {'moduler' : 'statusline#modules#file_encoding'},
+  \  'file_format'          : {'moduler' : 'statusline#modules#file_format'},
   \  }
 
 function! statusline#modules#get_modules() abort
@@ -101,6 +102,11 @@ endfunction
 function! statusline#modules#file_encoding() abort
   let encoding = !empty(&fileencoding) ? &fileencoding : &encoding
   return "%\\" . encoding
+endfunction
+
+function! statusline#modules#file_format() abort
+  let format = &fileformat
+  return "%\\" . format
 endfunction
 
 function! statusline#modules#current_mode() abort
