@@ -3,7 +3,7 @@ function! statusline#output() abort
 endfunction
 
 function! s:build_output() abort
-  let modules_by_positon = s:aggregate_modules()
+  let modules_by_positon = s:aggregate_modules_by_position()
   let line_by_position = {}
   for position in keys(modules_by_positon)
     let modules = get(modules_by_positon, position, [])
@@ -19,9 +19,9 @@ function! s:build_output() abort
   return s:join_line_by_position(line_by_position)
 endfunction
 
-function! s:join_line_by_position(lineput_by_position)
-  let left_output = get(a:lineput_by_position, 'left', [])
-  let right_output = get(a:lineput_by_position, 'right', [])
+function! s:join_line_by_position(line_by_position)
+  let left_output = get(a:line_by_position, 'left', [])
+  let right_output = get(a:line_by_position, 'right', [])
   return left_output . '%=' . right_output
 endfunction
 
@@ -35,12 +35,10 @@ let s:target_modules = {
   \ 'right' : ['current_mode', 'file_name', 'file_position_percent'],
   \ }
 
-function! s:aggregate_modules() abort
-  let left_target_modules = s:get_target_modules_by_position(s:target_modules, 'left')
-  let right_target_modules = s:get_target_modules_by_position(s:target_modules, 'right')
+function! s:aggregate_modules_by_position() abort
   let target_modules_by_position = {
-    \  'left'  : left_target_modules,
-    \  'right' : right_target_modules,
+    \  'left'  : s:get_target_modules_by_position(s:target_modules, 'left'),
+    \  'right' : s:get_target_modules_by_position(s:target_modules, 'right'),
     \}
   let modules = {}
   for position in keys(target_modules_by_position)
