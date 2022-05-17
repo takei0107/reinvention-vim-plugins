@@ -1,4 +1,4 @@
-let s:modules = {
+let s:builtin_modules = {
   \  'rel_path'              : {'moduler' : 'statusline#modules#rel_path'},
   \  'abs_path'              : {'moduler' : 'statusline#modules#abs_path'},
   \  'file_name'             : {'moduler' : 'statusline#modules#file_name'},
@@ -19,8 +19,8 @@ let s:modules = {
   \  'file_format'          : {'moduler' : 'statusline#modules#file_format'},
   \  }
 
-function! statusline#modules#get_modules() abort
-  return s:modules
+function! statusline#modules#get_buitin_modules() abort
+  return s:builtin_modules
 endfunction
 
 function! statusline#modules#resolve_moduler(module) abort
