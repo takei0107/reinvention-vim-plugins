@@ -35,3 +35,18 @@ function! s:get_mode_layout(mode_output) abort
   " TODO デフォルトレイアウト
   return get(s:mode_layouts, a:mode_output, 'default')
 endfunction
+
+function! statusline#utils#add_propertis_if_not_exists(dest_object, properties, ignore_empty) abort
+  for [key, value] in items(a:properties)
+    if has_key(a:dest_object, key)
+      continue
+    endif
+    if a:ignore_empty
+      " TODO 空文字判定
+      if empty(value)
+        continue
+      endif
+    endif
+    let a:dest_object[key] = value
+  endfor
+endfunction
