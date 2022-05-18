@@ -50,7 +50,12 @@ function! Hoge() abort
   return "hoge"
 endfunction
 
+let s:cached_modules = {}
 function! s:aggregate_modules_by_position() abort
+  " TODO 設定が変わったときに再キャッシュする
+  if !empty(s:cached_modules)
+    return s:cached_modules
+  endif
   let builtin_modules = statusline#modules#get_buitin_modules()
   " TODO target_modulesの利用しないようにする
   let target_modules_by_position = {
@@ -69,6 +74,7 @@ function! s:aggregate_modules_by_position() abort
     endfor
     let modules[position] = modules_by_position
   endfor
+  let s:cached_modules = modules
   return modules
 endfunction
 
