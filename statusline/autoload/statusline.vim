@@ -59,9 +59,8 @@ function! s:aggregate_modules_by_position() abort
     \}
   let merged_modules = s:get_merged_modules(get(s:target_modules, 'modules_def', {}), builtin_modules)
   let modules = {}
-  for position in keys(target_modules_by_position)
+  for [position, target_modules] in items(target_modules_by_position)
     let modules_by_position = []
-    let target_modules = get(target_modules_by_position, position, [])
     for module_name in target_modules
       let module = get(merged_modules, module_name, {})
       if !empty(module)
