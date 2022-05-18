@@ -45,6 +45,7 @@ let s:default_modules = {
   \ 'right' : ['file_format', 'file_encoding', 'file_type', 'file_position_percent']
   \ }
 
+" NOTE ユーザー定義の関数はグローバルで良い
 function! Hoge() abort
   return "hoge"
 endfunction
@@ -52,17 +53,17 @@ endfunction
 function! s:aggregate_modules_by_position() abort
   let builtin_modules = statusline#modules#get_buitin_modules()
   " TODO target_modulesの利用しないようにする
-  call s:merge_modules(get(s:target_modules, 'modules_def', {}), builtin_modules)
   let target_modules_by_position = {
     \  'left'  : s:get_target_modules_by_position(s:target_modules, 'left'),
     \  'right' : s:get_target_modules_by_position(s:target_modules, 'right'),
     \}
+  let merged_modules = s:get_merged_modules(get(s:target_modules, 'modules_def', {}), builtin_modules)
   let modules = {}
   for position in keys(target_modules_by_position)
     let modules_by_position = []
     let target_modules = get(target_modules_by_position, position, [])
     for module_name in target_modules
-      let module = get(builtin_modules, module_name, {})
+      let module = get(merged_modules, module_name, {})
       if !empty(module)
         call add(modules_by_position, module)
       endif
@@ -76,21 +77,31 @@ function! s:get_target_modules_by_position(target_modules, position) abort
   return get(a:target_modules, a:position, [])
 endfunction
 
-function! s:merge_modules(source_modules, dest_modules) abort
-  if empty(a:source_modules)
-    return a:dest_modules
+function! s:get_merged_modules(source_modules, dest_modules) abort
+  " TODO dest_modules,source_modulesのコピー作ってそれを利用するようにする
+  let merged = deepcopy(a:dest_modules)
+  if empty(merged)
+    return merged
   endif
   for [module_name, module_def] in items(a:source_modules)
     if empty(module_def)
       continue
     endif
-    let properties = {
-      \ 'moduler' : get(module_def, 'moduler'),
-      \ 'layout_group' : get(module_def, 'layout_group'),
-      \ 'layout_func' : get(module_def, 'layout_func'),
-      \ }
-    let obj = {}
-    call statusline#utils#add_propertis_if_not_exists(obj, properties, v:true)
-    call statusline#utils#add_propertis_if_not_exists(a:dest_modules, {module_name : obj}, v:true)
+    let module_properties = s:create_module_properties(module_def)
+    let custome_module = {}
+    call statusline#utils#add_propertis_if_not_exists(custome_module, module_properties, v:true)
+    call statusline#utils#add_propertis_if_not_exists(merged, {module_name : custome_module}, v:true)
   endfor
+  return merged
+endfunction
+
+function! s:create_module_properties(module_def) abort
+  let moduler = get(a:module_def, 'moduler')
+  let layout_group = get(a:module_def, 'layout_group')
+  let layout_func = get(a:module_def, 'layout_func')
+  return {
+    \ 'moduler' : moduler,
+    \ 'layout_group' : layout_group,
+    \ 'layout_func' : layout_func,
+    \ }
 endfunction

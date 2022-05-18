@@ -42,7 +42,6 @@ function! statusline#utils#add_propertis_if_not_exists(dest_object, properties, 
       continue
     endif
     if a:ignore_empty
-      " TODO 空文字判定
       if empty(value)
         continue
       endif
