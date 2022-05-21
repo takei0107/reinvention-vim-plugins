@@ -16,7 +16,10 @@ let s:builtin_modules = {
   \                              'layout_func' : "\<SID>layout_current_mode"
   \                            },
   \  'file_encoding'        : {'moduler' : 'statusline#modules#file_encoding'},
-  \  'file_format'          : {'moduler' : 'statusline#modules#file_format'},
+  \  'file_format'          : {
+  \                             'moduler' : 'statusline#modules#file_format',
+  \                             'layout_group' : 'conceal'
+  \                           },
   \  }
 
 function! statusline#modules#get_buitin_modules() abort

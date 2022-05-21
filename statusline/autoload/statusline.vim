@@ -37,6 +37,11 @@ let s:target_modules = {
   \   'hoge' : {
   \     'moduler' : "Hoge",
   \   }
+  \ },
+  \ 'modules_override' : {
+  \   'file_format' : {
+  \     'layout_group' : 'wildmenu',
+  \   }
   \ }
   \ }
 
@@ -63,11 +68,12 @@ function! s:aggregate_modules_by_position() abort
     \  'right' : s:get_target_modules_by_position(s:target_modules, 'right'),
     \}
   let merged_modules = s:get_merged_modules(get(s:target_modules, 'modules_def', {}), builtin_modules)
+  let overrided_modules = s:get_overrided_modules(get(s:target_modules, 'modules_override', {}), merged_modules)
   let modules = {}
   for [position, target_modules] in items(target_modules_by_position)
     let modules_by_position = []
     for module_name in target_modules
-      let module = get(merged_modules, module_name, {})
+      let module = get(overrided_modules, module_name, {})
       if !empty(module)
         call add(modules_by_position, module)
       endif
@@ -109,4 +115,27 @@ function! s:create_module_properties(module_def) abort
     \ 'layout_group' : layout_group,
     \ 'layout_func' : layout_func,
     \ }
+endfunction
+
+function! s:get_overrided_modules(override_defs, dest_modules) abort
+  let overrided = deepcopy(a:dest_modules)
+  if empty(overrided)
+    return overrided
+  endif
+  for [module_name, override_def] in items(a:override_defs)
+    if has_key(overrided, module_name)
+      call s:override_module_def(get(overrided, module_name), override_def)
+    endif
+  endfor
+  return overrided
+endfunction
+
+function! s:override_module_def(target_module, override_def) abort
+  let [overrid_layout_group, override_layout_func] = [get(a:override_def, 'layout_group'), get(a:override_def, 'layout_func')]
+  if !empty(overrid_layout_group)
+    let a:target_module['layout_group'] = overrid_layout_group
+  endif
+  if !empty(override_layout_func)
+    let a:target_module['layout_func'] = override_layout_func
+  endif
 endfunction
