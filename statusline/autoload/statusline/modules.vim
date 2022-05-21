@@ -58,6 +58,27 @@ function! statusline#modules#output(module) abort
   return layout_output . ' ' . moduler_output
 endfunction
 
+function! statusline#modules#create_module_properties(module_def) abort
+  let moduler = get(a:module_def, 'moduler')
+  let layout_group = get(a:module_def, 'layout_group')
+  let layout_func = get(a:module_def, 'layout_func')
+  return {
+    \ 'moduler' : moduler,
+    \ 'layout_group' : layout_group,
+    \ 'layout_func' : layout_func,
+    \ }
+endfunction
+
+function! statusline#modules#override_module_def(target_module, override_def) abort
+  let [overrid_layout_group, override_layout_func] = [get(a:override_def, 'layout_group'), get(a:override_def, 'layout_func')]
+  if !empty(overrid_layout_group)
+    let a:target_module['layout_group'] = overrid_layout_group
+  endif
+  if !empty(override_layout_func)
+    let a:target_module['layout_func'] = override_layout_func
+  endif
+endfunction
+
 function! statusline#modules#rel_path() abort
   return "%f"
 endfunction

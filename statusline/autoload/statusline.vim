@@ -89,7 +89,6 @@ function! s:get_target_modules_by_position(target_modules, position) abort
 endfunction
 
 function! s:get_merged_modules(source_modules, dest_modules) abort
-  " TODO dest_modules,source_modulesのコピー作ってそれを利用するようにする
   let merged = deepcopy(a:dest_modules)
   if empty(merged)
     return merged
@@ -98,23 +97,12 @@ function! s:get_merged_modules(source_modules, dest_modules) abort
     if empty(module_def)
       continue
     endif
-    let module_properties = s:create_module_properties(module_def)
+    let module_properties = statusline#modules#create_module_properties(module_def)
     let custome_module = {}
     call statusline#utils#add_propertis_if_not_exists(custome_module, module_properties, v:true)
     call statusline#utils#add_propertis_if_not_exists(merged, {module_name : custome_module}, v:true)
   endfor
   return merged
-endfunction
-
-function! s:create_module_properties(module_def) abort
-  let moduler = get(a:module_def, 'moduler')
-  let layout_group = get(a:module_def, 'layout_group')
-  let layout_func = get(a:module_def, 'layout_func')
-  return {
-    \ 'moduler' : moduler,
-    \ 'layout_group' : layout_group,
-    \ 'layout_func' : layout_func,
-    \ }
 endfunction
 
 function! s:get_overrided_modules(override_defs, dest_modules) abort
@@ -124,18 +112,8 @@ function! s:get_overrided_modules(override_defs, dest_modules) abort
   endif
   for [module_name, override_def] in items(a:override_defs)
     if has_key(overrided, module_name)
-      call s:override_module_def(get(overrided, module_name), override_def)
+      call statusline#modules#override_module_def(get(overrided, module_name), override_def)
     endif
   endfor
   return overrided
-endfunction
-
-function! s:override_module_def(target_module, override_def) abort
-  let [overrid_layout_group, override_layout_func] = [get(a:override_def, 'layout_group'), get(a:override_def, 'layout_func')]
-  if !empty(overrid_layout_group)
-    let a:target_module['layout_group'] = overrid_layout_group
-  endif
-  if !empty(override_layout_func)
-    let a:target_module['layout_func'] = override_layout_func
-  endif
 endfunction
