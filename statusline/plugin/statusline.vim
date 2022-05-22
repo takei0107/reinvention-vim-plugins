@@ -6,7 +6,8 @@ let g:loaded_statusline = 1
 let s:save_cpo = &cpo
 set cpo&vim
 
-"set statusline=hogefugafoobar%f
+let g:statusline_output_debug = get(g:, 'statusline_output_debug', 0)
+
 set statusline=%{%statusline#output()%}
 
 let &cpo = s:save_cpo

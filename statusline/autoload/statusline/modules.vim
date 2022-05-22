@@ -124,13 +124,11 @@ function! statusline#modules#file_position_percent() abort
 endfunction
 
 function! statusline#modules#file_encoding() abort
-  let encoding = !empty(&fileencoding) ? &fileencoding : &encoding
-  return "%\\" . encoding
+  return !empty(&fileencoding) ? &fileencoding : &encoding
 endfunction
 
 function! statusline#modules#file_format() abort
-  let format = &fileformat
-  return "%\\" . format
+  return &fileformat
 endfunction
 
 function! statusline#modules#current_mode() abort

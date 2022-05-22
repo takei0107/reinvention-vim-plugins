@@ -1,5 +1,9 @@
 function! statusline#output() abort
-  return s:build_output()
+  let output = s:build_output()
+  if g:statusline_output_debug
+    echom output
+  endif
+  return output
 endfunction
 
 function! s:build_output() abort
