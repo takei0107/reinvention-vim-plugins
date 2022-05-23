@@ -1,3 +1,8 @@
+let s:default_modules = {
+  \ 'left' : ['current_mode', 'file_name'],
+  \ 'right' : ['file_format', 'file_encoding', 'file_type', 'file_position_percent']
+  \ }
+
 let s:builtin_modules = {
   \  'rel_path'              : {'moduler' : 'statusline#modules#rel_path'},
   \  'abs_path'              : {'moduler' : 'statusline#modules#abs_path'},
@@ -22,8 +27,12 @@ let s:builtin_modules = {
   \                           },
   \  }
 
+function! statusline#modules#get_default_modulues() abort
+  return deepcopy(s:default_modules)
+endfunction
+
 function! statusline#modules#get_buitin_modules() abort
-  return s:builtin_modules
+  return deepcopy(s:builtin_modules)
 endfunction
 
 function! statusline#modules#resolve_moduler(module) abort

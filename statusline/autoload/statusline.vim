@@ -33,32 +33,6 @@ function! s:create_line(outputs) abort
   return join(a:outputs, ' ')
 endfunction
 
-" TODO 利用するモジュールの決定
-let s:target_modules = {
-  \ 'left' : ['file_encoding', 'file_format'],
-  \ 'right' : ['current_mode', 'hoge'],
-  \ 'modules_def' : {
-  \   'hoge' : {
-  \     'moduler' : "Hoge",
-  \   }
-  \ },
-  \ 'modules_override' : {
-  \   'file_format' : {
-  \     'layout_group' : 'wildmenu',
-  \   }
-  \ }
-  \ }
-
-let s:default_modules = {
-  \ 'left' : ['current_mode', 'file_name'],
-  \ 'right' : ['file_format', 'file_encoding', 'file_type', 'file_position_percent']
-  \ }
-
-" NOTE ユーザー定義の関数はグローバルで良い
-function! Hoge() abort
-  return "hoge"
-endfunction
-
 let s:cached_modules = {}
 function! s:aggregate_modules_by_position() abort
   " TODO 設定が変わったときに再キャッシュする
@@ -66,14 +40,16 @@ function! s:aggregate_modules_by_position() abort
     return s:cached_modules
   endif
   let builtin_modules = statusline#modules#get_buitin_modules()
-  " TODO target_modulesの利用しないようにする
-  let target_modules_by_position = {
-    \  'left'  : s:get_target_modules_by_position(s:target_modules, 'left'),
-    \  'right' : s:get_target_modules_by_position(s:target_modules, 'right'),
-    \}
-  let merged_modules = s:get_merged_modules(get(s:target_modules, 'modules_def', {}), builtin_modules)
-  let overrided_modules = s:get_overrided_modules(get(s:target_modules, 'modules_override', {}), merged_modules)
+  let target_modules = s:create_target_modules()
+  " カスタムモジュールの定義をマージ
+  let merged_modules = s:get_merged_modules(get(target_modules, 'modules_def', {}), builtin_modules)
+  " モジュールのオーバーライド
+  let overrided_modules = s:get_overrided_modules(get(target_modules, 'modules_override', {}), merged_modules)
   let modules = {}
+  let target_modules_by_position = {
+    \  'left'  : s:get_modules_by_position(target_modules, 'left'),
+    \  'right' : s:get_modules_by_position(target_modules, 'right'),
+    \}
   for [position, target_modules] in items(target_modules_by_position)
     let modules_by_position = []
     for module_name in target_modules
@@ -88,7 +64,14 @@ function! s:aggregate_modules_by_position() abort
   return modules
 endfunction
 
-function! s:get_target_modules_by_position(target_modules, position) abort
+function! s:create_target_modules() abort
+  let default_modules = statusline#modules#get_default_modulues()
+  let target_modules = deepcopy(default_modules)
+  call extend(target_modules, g:statusline_custom_modules, 'force')
+  return target_modules
+endfunction
+
+function! s:get_modules_by_position(target_modules, position) abort
   return get(a:target_modules, a:position, [])
 endfunction
 
